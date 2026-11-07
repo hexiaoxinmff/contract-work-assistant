@@ -1,10 +1,11 @@
 # Contract Work Assistant
 
-A platform-independent skill for AI agents that supports three contract-document tasks:
+A platform-independent v0.8 trial skill for AI agents that supports contract-document tasks:
 
 - Text and DOCX formatting checks.
 - Cross-checking contract content against the document and materials supplied by the user.
 - Filling an existing DOCX template with explicitly supplied facts and saving a separate output.
+- Turning everyday-language requests into usable task prompts or carrying out the task directly when that is what the user asks.
 
 The skill includes three standard-library Python helpers under `contract-work-assistant/tools/`:
 
@@ -18,4 +19,6 @@ The scripts do not provide legal opinions, determine enforceability, or submit d
 
 Import or copy the complete `contract-work-assistant` folder into the skills location supported by your AI agent. Keep `SKILL.md`, `tools/`, and `references/` together. Follow the host platform's skill installation steps, then start a new conversation and confirm the loaded version before use.
 
-See [`references/使用与后期更新.md`](contract-work-assistant/references/使用与后期更新.md) for task examples, tool behavior, installation and upgrade guidance.
+See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, and [`使用与后期更新.md`](contract-work-assistant/references/使用与后期更新.md) for installation and upgrade guidance.
+
+
