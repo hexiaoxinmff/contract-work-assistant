@@ -1,15 +1,15 @@
 # Contract Work Assistant
 
-A platform-independent v0.9 trial skill for AI agents that supports contract-document tasks:
+A platform-independent v1.0 trial skill for AI agents that supports contract-document tasks:
 
 - Text and DOCX formatting checks.
 - Cross-checking contract content against the document and materials supplied by the user.
 - Filling an existing DOCX template with explicitly supplied facts and saving a separate output.
 - Turning everyday-language requests into usable task prompts or carrying out the task directly when that is what the user asks.
 
-The skill includes three standard-library Python helpers under `contract-work-assistant/tools/`:
+The skill includes four standard-library Python helpers under `contract-work-assistant/tools/`:
 
-- `inspect_docx_format.py` reads DOCX run properties, paragraph styles, style inheritance and document defaults.
+- `check_environment.py` checks first-use runtime and file access prerequisites. `inspect_docx_format.py` reads DOCX run properties, paragraph styles, style inheritance and document defaults.
 - `fill_docx.py` performs unique, exact text replacements in a new output file and refuses ambiguous replacements or overwriting the source.
 - `compare_docx.py` compares text changes and package structure between a source document and its output.
 
@@ -20,6 +20,7 @@ The scripts do not provide legal opinions, determine enforceability, or submit d
 Import or copy the complete `contract-work-assistant` folder into the skills location supported by your AI agent. Keep `SKILL.md`, `tools/`, and `references/` together. Follow the host platform's skill installation steps, then start a new conversation and confirm the loaded version before use.
 
 See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, [`验收案例.md`](contract-work-assistant/references/验收案例.md) for fictional acceptance scenarios, and [`使用与后期更新.md`](contract-work-assistant/references/使用与后期更新.md) for installation and upgrade guidance.
+
 
 
 
