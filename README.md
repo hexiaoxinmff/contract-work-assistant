@@ -1,9 +1,9 @@
 # Contract Work Assistant
 
-A platform-independent v1.1 trial skill for AI agents that supports contract-document tasks. Users can provide their own current template at use time; templates are not stored in this public package:
+A platform-independent v1.4 trial skill for AI agents that supports contract-document tasks. Users can provide their own current template at use time; templates are not stored in this public package:
 
 - Text and DOCX formatting checks.
-- Cross-checking contract content against the document and materials supplied by the user.
+- Cross-checking contract content across contracts and supporting documents supplied by the user, with explicit file-readability and version limits.
 - Filling an existing DOCX template with explicitly supplied facts and saving a separate output.
 - Turning everyday-language requests into usable task prompts or carrying out the task directly when that is what the user asks.
 
@@ -13,7 +13,7 @@ The skill includes four standard-library Python helpers under `contract-work-ass
 - `fill_docx.py` performs unique, exact text replacements in a new output file and refuses ambiguous replacements or overwriting the source.
 - `compare_docx.py` compares text changes and package structure between a source document and its output.
 
-The scripts do not provide legal opinions, determine enforceability, or submit documents to business systems. File operations require the host environment to provide Python/command execution. The skill can be adapted to any agent platform that supports skills or equivalent instruction packages; actual file-tool availability depends on the host. Use only documents that you are authorized to process, and have a responsible person review all outputs.
+The included scripts focus on DOCX and environment checks; they do not provide PDF OCR or legacy DOC parsing. The scripts do not provide legal opinions, determine enforceability, or submit documents to business systems. File operations require the host environment to provide Python/command execution. The skill can be adapted to any agent platform that supports skills or equivalent instruction packages; actual file-tool availability depends on the host. Use only documents that you are authorized to process, and have a responsible person review all outputs.
 
 ## Install
 
