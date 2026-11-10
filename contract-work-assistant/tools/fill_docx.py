@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import html
+import io
 import json
 import os
 import re
@@ -58,12 +59,34 @@ def apply_to_xml(xml: bytes, pairs: list[tuple[str, str]], replace_all: bool) ->
         raise ValueError("Unsupported DOCX namespace prefix or text-node form; no output written")
 
     report = []
+    spans_by_node = [[] for _ in matches]
     for old, new in pairs:
         counts = []
-        for m in matches:
+        for node_index, m in enumerate(matches):
             decoded = html.unescape(m.group(2).decode("utf-8"))
-            counts.append(decoded.count(old))
+            positions = []
+            start = 0
+            while True:
+                pos = decoded.find(old, start)
+                if pos < 0:
+                    break
+                positions.append(pos)
+                spans_by_node[node_index].append((pos, pos + len(old)))
+                start = pos + 1
+            counts.append(len(positions))
         count = sum(counts)
+        paragraph_count = 0
+        for paragraph in root.findall('.//w:p', NS):
+            joined = ''.join((t.text or '') for t in paragraph.findall('.//w:t', NS))
+            start = 0
+            while True:
+                pos = joined.find(old, start)
+                if pos < 0:
+                    break
+                paragraph_count += 1
+                start = pos + 1
+        if paragraph_count != count:
+            raise ValueError("Target may span text nodes or occur outside a paragraph; no output written")
         if count == 0:
             split = any(old in "".join((t.text or "") for t in p.findall(".//w:t", NS))
                         for p in root.findall(".//w:p", NS))
@@ -73,11 +96,18 @@ def apply_to_xml(xml: bytes, pairs: list[tuple[str, str]], replace_all: bool) ->
             raise ValueError(f"Text occurs {count} times, not once: {old!r}; specify --all only if every occurrence is intended")
         report.append({"old": old, "new": new, "occurrences": count})
 
+    for spans in spans_by_node:
+        spans.sort()
+        if any(right[0] < left[1] for left, right in zip(spans, spans[1:])):
+            raise ValueError("Replacement targets overlap in the source; no output written")
+
+    # Apply every replacement to the original text, never to another new value.
+    replacements = dict(pairs)
+    pattern = re.compile("|".join(re.escape(old) for old, _ in pairs))
+
     def sub(m: re.Match[bytes]) -> bytes:
         decoded = html.unescape(m.group(2).decode("utf-8"))
-        updated = decoded
-        for old, new in pairs:
-            updated = updated.replace(old, new) if replace_all else updated.replace(old, new, 1)
+        updated = pattern.sub(lambda hit: replacements[hit.group(0)], decoded)
         if updated == decoded:
             return m.group(0)
         opening = m.group(1)
@@ -94,6 +124,7 @@ def main() -> int:
     ap.add_argument("source", type=Path)
     ap.add_argument("--out", required=True, type=Path, help="new output DOCX; must not already exist")
     ap.add_argument("--replace", action="append", required=True, metavar="OLD=>NEW")
+    ap.add_argument("--expect-sha256", help="expected source SHA-256 from occurrence inspection")
     ap.add_argument("--all", action="store_true", help="replace every exact occurrence (use only when explicitly intended)")
     args = ap.parse_args()
     source, out = args.source.resolve(), args.out.resolve()
@@ -105,7 +136,11 @@ def main() -> int:
         print(json.dumps({"error": "output_already_exists", "path": str(out)}, ensure_ascii=False)); return 2
     try:
         pairs = parse_pairs(args.replace)
-        with zipfile.ZipFile(source, "r") as zin:
+        original_bytes = source.read_bytes()
+        original_hash = hashlib.sha256(original_bytes).hexdigest()
+        if args.expect_sha256 and args.expect_sha256.lower() != original_hash:
+            raise ValueError("Source has changed since inspection; no output written")
+        with zipfile.ZipFile(io.BytesIO(original_bytes), "r") as zin:
             bad = zin.testzip()
             if bad:
                 raise ValueError(f"Corrupt ZIP member: {bad}")
@@ -132,15 +167,17 @@ def main() -> int:
                 ET.fromstring(check.read("word/document.xml"))
             if out.exists():
                 raise FileExistsError(f"Output appeared during operation; refusing to overwrite: {out}")
+            if hashlib.sha256(source.read_bytes()).hexdigest() != original_hash:
+                raise ValueError("Source changed during operation; no output written")
             os.rename(tmp_name, out)
         except Exception:
             if os.path.exists(tmp_name):
                 os.unlink(tmp_name)
             raise
         print(json.dumps({
-            "source": str(source), "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "source": str(source), "source_sha256": original_hash,
             "output": str(out), "output_sha256": hashlib.sha256(out.read_bytes()).hexdigest(),
-            "replacement_operations": report, "source_modified": False,
+            "replacement_operations": report, "source_modified": hashlib.sha256(source.read_bytes()).hexdigest() != original_hash,
             "scope": "Only text in word/document.xml w:t nodes was changed; all other package parts preserved.",
         }, ensure_ascii=False, indent=2))
         return 0

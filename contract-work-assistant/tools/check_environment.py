@@ -19,9 +19,12 @@ REQUIRED_TOOLS = (
     "check_environment.py",
     "inspect_docx_format.py",
     "fill_docx.py",
+    "find_docx_occurrences.py",
     "compare_docx.py",
+    "compare_service_text.py",
+    "compare_price_inputs.py",
 )
-REQUIRED_MODULES = ("argparse", "hashlib", "json", "xml.etree.ElementTree", "zipfile")
+REQUIRED_MODULES = ("argparse", "hashlib", "json", "xml.etree.ElementTree", "zipfile", "difflib", "decimal")
 
 
 def main() -> int:
