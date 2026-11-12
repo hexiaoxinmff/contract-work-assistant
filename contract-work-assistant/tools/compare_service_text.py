@@ -10,7 +10,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
-HEADING = re.compile(r'^��[һ�����������߰˾�ʮ��ǧ���㩖��0-9]+��\s*[:����.��]?\s*(.{1,35})$')
+HEADING = re.compile(r'^第[一二三四五六七八九十百千万零〇两0-9]+条\s*[:：、.．]?\s*(.{1,35})$')
 
 def heading_candidates(first, second):
     """Identify unambiguous exact titles, never semantic equivalence."""
@@ -20,9 +20,9 @@ def heading_candidates(first, second):
             match = HEADING.match(text.strip())
             if not match:
                 continue
-            title = match.group(1).strip().rstrip('��:')
+            title = match.group(1).strip().rstrip('：:')
             # A sentence or numbered clause body is not safely identifiable as a title.
-            if not title or re.search(r'[����;����!?\n]', title):
+            if not title or re.search(r'[。；;！？!?\n]', title):
                 continue
             found.setdefault(title, []).append({'location': location, 'text': text})
         return found

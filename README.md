@@ -24,7 +24,7 @@ The included scripts cover DOCX, TXT, structured quote calculations and environm
 
 Import or copy the complete `contract-work-assistant` folder into the skills location supported by your AI agent. Keep `SKILL.md`, `tools/`, and `references/` together. Follow the host platform's skill installation steps, then start a new conversation and confirm the loaded version before use.
 
-See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, [`���հ���.md`](contract-work-assistant/references/���հ���.md) for fictional acceptance scenarios, and [`ʹ������ڸ���.md`](contract-work-assistant/references/ʹ������ڸ���.md) for installation and upgrade guidance.
+See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, [`验收案例.md`](contract-work-assistant/references/验收案例.md) for fictional acceptance scenarios, and [`使用与后期更新.md`](contract-work-assistant/references/使用与后期更新.md) for installation and upgrade guidance.
 
 
 
