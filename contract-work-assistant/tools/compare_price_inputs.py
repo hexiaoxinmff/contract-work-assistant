@@ -41,7 +41,7 @@ def main():
                 ctx.prec = max(50, len(q['amount']) + 10)
                 if q['interval'] in ('month', 'year'):
                     row['annual_rate'] = str(amount * (12 if q['interval'] == 'month' else 1))
-                    row['formula'] = q['amount'] + (' × 12' if q['interval'] == 'month' else ' × 1')
+                    row['formula'] = q['amount'] + (' �� 12' if q['interval'] == 'month' else ' �� 1')
                 elif q['interval'] == 'once':
                     row['one_time_stated_fee'] = str(amount)
                 elif 'calculation_quantity' in q:
@@ -53,7 +53,7 @@ def main():
                         raise ValueError('calculation_quantity must be finite and nonnegative')
                     ctx.prec = max(ctx.prec, len(q['amount']) + len(raw_qty) + 10)
                     row['partial_amount'] = str(amount * quantity)
-                    row['formula'] = q['amount'] + ' × ' + raw_qty
+                    row['formula'] = q['amount'] + ' �� ' + raw_qty
                     row['quantity_source'] = q['quantity_source']
                 else:
                     row['calculation_note'] = 'Quantity not supplied; no partial amount calculated.'

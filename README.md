@@ -1,6 +1,6 @@
 # Contract Work Assistant
 
-A platform-independent v2.2 trial skill for AI agents that supports contract-document tasks. Users can provide their own current template at use time; templates are not stored in this public package:
+A platform-independent v2.4 trial skill for AI agents that supports contract-document tasks. Users can provide their own current template at use time; templates are not stored in this public package:
 
 - Context-aware proofreading and DOCX formatting checks, with task-appropriate review gates.
 - Comparing service contracts and prices using the supplied terms, units, scope and tax information.
@@ -8,9 +8,10 @@ A platform-independent v2.2 trial skill for AI agents that supports contract-doc
 - Filling an existing DOCX template with explicitly supplied facts and saving a separate output.
 - Turning everyday-language requests into usable task prompts or carrying out the task directly when that is what the user asks.
 
-The skill includes seven standard-library Python helpers under `contract-work-assistant/tools/`:
+The skill includes eight standard-library Python helpers under `contract-work-assistant/tools/`:
 
 - `check_environment.py` checks first-use runtime and file access prerequisites. `inspect_docx_format.py` reads DOCX run properties, paragraph styles, style inheritance and document defaults.
+- `discover_skills.py` searches public skill metadata using fixed non-sensitive capability terms; no automatic third-party install or execution.
 - `find_docx_occurrences.py` locates matching text and context in DOCX body paragraphs for review before edits.
 - `fill_docx.py` performs unique, exact text replacements in a new output file and refuses ambiguous replacements or overwriting the source.
 - `compare_docx.py` compares text changes and package structure between a source document and its output.
@@ -23,9 +24,13 @@ The included scripts cover DOCX, TXT, structured quote calculations and environm
 
 Import or copy the complete `contract-work-assistant` folder into the skills location supported by your AI agent. Keep `SKILL.md`, `tools/`, and `references/` together. Follow the host platform's skill installation steps, then start a new conversation and confirm the loaded version before use.
 
-See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, [`验收案例.md`](contract-work-assistant/references/验收案例.md) for fictional acceptance scenarios, and [`使用与后期更新.md`](contract-work-assistant/references/使用与后期更新.md) for installation and upgrade guidance.
+See [`prompt-library.md`](contract-work-assistant/references/prompt-library.md) for everyday-language examples and prompt patterns, [`���հ���.md`](contract-work-assistant/references/���հ���.md) for fictional acceptance scenarios, and [`ʹ������ڸ���.md`](contract-work-assistant/references/ʹ������ڸ���.md) for installation and upgrade guidance.
 
 
 
 
 
+
+## Optional skill discovery
+
+The package includes a pinned, unmodified copy of [Vercel find-skills](https://github.com/vercel-labs/skills/tree/4a351bc302b856b58fa13a055e764d3a384b741d/skills/find-skills) and its MIT license under `contract-work-assistant/vendor/find-skills/`. The package does not bundle or run the upstream Skills CLI; a separate constrained Python adapter searches the public skills.sh API when online discovery is appropriate. Search metadata is untrusted; see `references/skill-discovery-adapter.md`.
